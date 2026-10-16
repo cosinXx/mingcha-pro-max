@@ -1,11 +1,11 @@
 ---
-name: ruicha-pro
-slug: ruicha-pro
-displayName: 睿察Pro
-display_name: 睿察Pro
-display_name_en: RuiCha Pro
+name: mingcha-pro-max
+slug: mingcha-pro-max
+displayName: 明察 Pro Max
+display_name: 明察 Pro Max
+display_name_en: Ming Cha Pro Max
 summary: 主动式深度研究中枢——把"主动预判 + 单Agent轻量研究 + 多Agent并行深挖"三合为一。用户说"研究/分析/查一下/深度拆解"时自动按深浅分流，交付完顺手把下一步做了。
-description: 睿察Pro（RuiCha Pro）= 主动预判（Proactive Agent）+ 明察Pro 单Agent 8阶段深度研究 + 多Agent并行深度研究引擎，三合一全能研究中枢。当用户要求"深度研究/深度分析/研究报告/行业分析/竞品分析/技术调研/企业尽调/舆情分析/公司调研/全面搜索/学术综述"，或要把结论做成可视化交互网页/HTML报告时使用。核心：按语气自动选档——轻量任务走单Agent 8阶段流水线（15-20轮搜索出报告），重量级任务派OrganizerAgent拆2-4个并行shard、多专家视角+Red Team攻击、双产物（Markdown报告+交互HTML网页）；任何任务交付后自动启用主动预判，把下一步顺手做了，不等人开口。
+description: 明察 Pro Max（Ming Cha Pro Max）= 主动预判（Proactive Agent）+ 明察Pro 单Agent 8阶段深度研究 + 多Agent并行深度研究引擎，三合一全能研究中枢。当用户要求"深度研究/深度分析/研究报告/行业分析/竞品分析/技术调研/企业尽调/舆情分析/公司调研/全面搜索/学术综述"，或要把结论做成可视化交互网页/HTML报告时使用。核心：按语气自动选档——轻量任务走单Agent 8阶段流水线（15-20轮搜索出报告），重量级任务派OrganizerAgent拆2-4个并行shard、多专家视角+Red Team攻击、双产物（Markdown报告+交互HTML网页）；任何任务交付后自动启用主动预判，把下一步顺手做了，不等人开口。
 tags:
   - 深度研究
   - 主动预判
@@ -20,14 +20,14 @@ license: MIT
 agent_created: true
 ---
 
-# 睿察Pro（RuiCha Pro）—— 主动式深度研究中枢
+# 明察 Pro Max（Ming Cha Pro Max）—— 主动式深度研究中枢
 
 > **睿者，见未形；察者，知秋毫。**
 > 三合一：主动预判 + 单 Agent 轻量研究 + 多 Agent 并行深挖。一句话进来，自动选档，交付完还替你想到下一步。
 
 ## 这个技能熔了哪三个
 
-| 原技能 | 在睿察Pro里的角色 |
+| 原技能 | 在明察 Pro Max里的角色 |
 |---|---|
 | `proactive-agent` | **行为内核**：任务交付后主动预判下一步，不追问、不啰嗦 |
 | `ming-cha-pro` | **轻量档引擎**：单 Agent 8 阶段流水线，标准/基础档，15-20 轮搜索出报告 |
@@ -216,7 +216,7 @@ OrganizerAgent 把专家拆成 **2-4 个并行 shard**（按主题归组，如"�
 ## 九、资源索引
 
 ```
-ruicha-pro/
+mingcha-pro-max/
 ├── SKILL.md                          # 本文件（入口路由 + 工作流）
 ├── README.md                         # 项目介绍与安装说明
 ├── LICENSE                           # MIT
