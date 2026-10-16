@@ -31,7 +31,7 @@ agent_created: true
 |---|---|
 | `proactive-agent` | **行为内核**：任务交付后主动预判下一步，不追问、不啰嗦 |
 | `ming-cha-pro` | **轻量档引擎**：单 Agent 8 阶段流水线，标准/基础档，15-20 轮搜索出报告 |
-| `doubao-multi-agent-deep-research` | **重量档引擎**：多 Agent 并行 + Red Team 攻击，全链路深度研报 + 交互 HTML 网页 |
+| `mingcha-multi-agent-deep-research` | **重量档引擎**：多 Agent 并行 + Red Team 攻击，全链路深度研报 + 交互 HTML 网页 |
 
 ---
 

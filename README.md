@@ -30,7 +30,7 @@
 |---|---|
 | Proactive Agent | 行为内核：任务交付后主动预判下一步，不连环追问 |
 | 明察Pro（Ming Cha Pro） | 轻量档引擎：单 Agent 8 阶段深度研究流水线 |
-| Doubao Multi Agent Deep Research | 重量档引擎：多 Agent 并行 + 多专家视角 + Red Team |
+| Mingcha Multi Agent Deep Research | 重量档引擎：多 Agent 并行 + 多专家视角 + Red Team |
 
 ## 核心能力
 
