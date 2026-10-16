@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{标题}} · 信息总结报告</title>
+<!--
+  明察（Ming Cha）· 交互式报告模板
+  用法：全局替换 {{占位符}} 并填充真实数据；禁止引入任何外部资源（CDN/字体/图片）。
+  章节可增删，但「矛盾信息与置信度清单」与「数据来源清单」不可省略。
+-->
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1c2430; --ink-2:#5b6675; --ink-3:#8b95a3;
+    --line:#e6e9ee; --accent:#1f6feb; --accent-soft:#e8f0fe;
+    --green:#1a9e6e; --green-soft:#e5f5ef;
+    --amber:#b97d10; --amber-soft:#fdf3e0;
+    --red:#c4453c; --red-soft:#fbeae8;
+    --purple:#7c5cd6; --purple-soft:#f0ecfb;
+    --radius:14px;
+    /* 自适应扩展：以下变量供主题切换与交互状态消费，浅色取值与原设计完全一致 */
+    --hover:#fafbfc; --th-bg:#f2f4f8; --track:#eef1f5; --dot:#ffffff;
+    --topbar-bg:rgba(247,248,250,.88);
+    --c-warn-bg:#fdf3e0; --c-warn-bd:#f2ddb0; --c-warn-ink:#6b4e13;
+    --c-note-bg:#e8f0fe; --c-note-bd:#c9dcfb; --c-note-ink:#17427d;
+    --c-risk-bg:#fbeae8; --c-risk-bd:#f2c9c4; --c-risk-ink:#7c2c25;
+    --concl-a:#17233a; --concl-b:#24344f; --concl-ink:#e8edf5; --concl-ink2:#c3ccda;
+    --shadow:0 6px 20px rgba(0,0,0,.18);
+    color-scheme: light;
+  }
+
+  /* ── 主题自适应：跟随系统深色偏好，切换为同一套设计语言的深色取值 ──
+     仅重定义变量，不改任何布局与组件结构；浅色主题完全不受影响。 */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --card:#171c24; --ink:#e6ebf2; --ink-2:#a6b0be; --ink-3:#717d8c;
+      --line:#262d38; --accent:#5b9bff; --accent-soft:#16243a;
+      --green:#3ecf9a; --green-soft:#13291f;
+      --amber:#e0a644; --amber-soft:#2c2413;
+      --red:#f07b72; --red-soft:#2f1a18;
+      --purple:#a68bf0; --purple-soft:#221c33;
+      --hover:#1d232c; --th-bg:#1b212a; --track:#232a34; --dot:#171c24;
+      --topbar-bg:rgba(15,19,25,.86);
+      --c-warn-bg:#2c2413; --c-warn-bd:#4a3a17; --c-warn-ink:#e8c67e;
+      --c-note-bg:#16243a; --c-note-bd:#1e3557; --c-note-ink:#9dc0f5;
+      --c-risk-bg:#2f1a18; --c-risk-bd:#4d2a27; --c-risk-ink:#f0a49c;
+      --concl-a:#1a2436; --concl-b:#212f47; --concl-ink:#e8edf5; --concl-ink2:#b7c1d1;
+      --shadow:0 6px 20px rgba(0,0,0,.5);
+      color-scheme: dark;
+    }
+    /* 深色下强调色变亮，选中态改用深色文字以保证对比度 */
+    .nav a.active{color:#0b1017}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75; font-size:15px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .topbar{position:sticky;top:0;z-index:50;background:var(--topbar-bg);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+  .topbar .title{font-weight:700;font-size:15px}
+  .topbar .sub{color:var(--ink-3);font-size:12.5px}
+  .nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+  .nav a{padding:5px 11px;border-radius:999px;font-size:12.5px;color:var(--ink-2);border:1px solid transparent;transition:.15s}
+  .nav a:hover{background:var(--accent-soft);color:var(--accent);text-decoration:none}
+  .nav a.active{background:var(--accent);color:#fff}
+  .hero{max-width:1100px;margin:0 auto;padding:44px 24px 8px}
+  .hero .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:999px}
+  .hero h1{font-size:clamp(26px,4vw,38px);line-height:1.3;margin:14px 0 6px;letter-spacing:-.5px}
+  .hero .alias{color:var(--ink-2);font-size:15px;margin-bottom:18px}
+  .hero .alias b{color:var(--ink);font-weight:600}
+  .meta-row{display:flex;gap:20px;flex-wrap:wrap;color:var(--ink-3);font-size:12.5px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .meta-row span{display:inline-flex;align-items:center;gap:6px}
+  .kpi-grid{max-width:1100px;margin:26px auto 0;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .kpi .label{font-size:12px;color:var(--ink-3);letter-spacing:.3px}
+  .kpi .value{font-size:24px;font-weight:800;letter-spacing:-.3px;margin:2px 0}
+  .kpi .value small{font-size:13px;font-weight:600;color:var(--ink-2)}
+  .kpi .note{font-size:11.5px;color:var(--ink-3)}
+  .kpi.hl{background:linear-gradient(135deg,#1f6feb,#3b82f6);border:none;color:#fff}
+  .kpi.hl .label,.kpi.hl .note{color:rgba(255,255,255,.82)}
+  .wrap{max-width:1100px;margin:0 auto;padding:30px 24px 80px}
+  section.block{margin-top:34px;scroll-margin-top:76px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .sec-num{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:2px 10px;border-radius:999px;flex:none}
+  .sec-head h2{font-size:21px;letter-spacing:-.3px}
+  .sec-head .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+  .fold{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+  .fold-head{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:15px 20px;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:650;color:var(--ink)}
+  .fold-head:hover{background:var(--hover)}
+  .fold-head .chev{margin-left:auto;transition:transform .22s ease;flex:none;width:18px;height:18px;color:var(--ink-3)}
+  .fold.open .chev{transform:rotate(180deg)}
+  .fold-body{display:none;padding:2px 20px 18px;border-top:1px solid var(--line)}
+  .fold.open .fold-body{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 28px}
+  .info-item{display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+  .info-item .k{color:var(--ink-3);flex:none;width:92px}
+  .info-item .v{color:var(--ink);font-weight:500;word-break:break-all}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;padding:2px 10px;border-radius:999px;white-space:nowrap}
+  .b-high{background:var(--green-soft);color:var(--green)}
+  .b-mid{background:var(--amber-soft);color:var(--amber)}
+  .b-low{background:var(--red-soft);color:var(--red)}
+  .b-info{background:var(--accent-soft);color:var(--accent)}
+  .b-purple{background:var(--purple-soft);color:var(--purple)}
+  .callout{border-radius:12px;padding:14px 18px;font-size:13.5px;margin:12px 0;border:1px solid;display:flex;gap:10px}
+  .callout .icon{flex:none;font-size:15px;line-height:1.5}
+  .c-warn{background:var(--c-warn-bg);border-color:var(--c-warn-bd);color:var(--c-warn-ink)}
+  .c-note{background:var(--c-note-bg);border-color:var(--c-note-bd);color:var(--c-note-ink)}
+  .c-risk{background:var(--c-risk-bg);border-color:var(--c-risk-bd);color:var(--c-risk-ink)}
+  .chart-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
+  .chart-sub{font-size:11.5px;color:var(--ink-3);margin-bottom:14px}
+  .charts-2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+  @media(max-width:820px){.charts-2{grid-template-columns:1fr}}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12.5px}
+  .bar-row .name{width:76px;flex:none;color:var(--ink-2)}
+  .bar-track{flex:1;height:16px;background:var(--track);border-radius:8px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#3b82f6,#1f6feb)}
+  .bar-row .num{width:34px;text-align:right;font-weight:700;color:var(--ink)}
+  .timeline{position:relative;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .tl-item{position:relative;padding:0 0 18px 14px}
+  .tl-item::before{content:"";position:absolute;left:-23px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--dot);border:3px solid var(--accent)}
+  .tl-item.warn::before{border-color:var(--amber)}
+  .tl-item.risk::before{border-color:var(--red)}
+  .tl-item.good::before{border-color:var(--green)}
+  .tl-date{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.3px}
+  .tl-text{font-size:13.5px;margin-top:1px}
+  .tl-text b{font-weight:650}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--th-bg);color:var(--ink-2);font-weight:650;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--hover)}
+  .biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:820px){.biz-grid{grid-template-columns:1fr}}
+  .biz-card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:var(--card)}
+  .biz-card .biz-tag{font-size:11.5px;font-weight:700;letter-spacing:.5px;padding:3px 11px;border-radius:999px;display:inline-block}
+  .biz-card h3{font-size:17px;margin:10px 0 6px}
+  .biz-card p{font-size:13px;color:var(--ink-2)}
+  .biz-card ul{margin:10px 0 0 18px;font-size:12.8px;color:var(--ink-2)}
+  .biz-card li{margin:4px 0}
+  .src-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+  .src-item{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:12.5px}
+  .src-item .lv{flex:none;font-size:10.5px;font-weight:800;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .lv-s{background:var(--green-soft);color:var(--green)}
+  .lv-a{background:var(--accent-soft);color:var(--accent)}
+  .lv-b{background:var(--amber-soft);color:var(--amber)}
+  .src-item .t{color:var(--ink);font-weight:600;line-height:1.45}
+  .src-item .u{word-break:break-all;font-size:11px}
+  .conclusion-card{background:linear-gradient(135deg,var(--concl-a),var(--concl-b));color:var(--concl-ink);border:none;border-radius:var(--radius);padding:24px 26px}
+  .conclusion-card h3{color:var(--concl-ink);font-size:17px;margin-bottom:10px}
+  .conclusion-card p{font-size:13.5px;color:var(--concl-ink2);margin:8px 0}
+  .conclusion-card .c-item{display:flex;gap:10px;align-items:flex-start;margin:11px 0;font-size:13.5px}
+  .conclusion-card .c-item .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#5b9bff;margin-top:8px}
+  .conclusion-card .badge{margin-right:4px}
+  footer{text-align:center;color:var(--ink-3);font-size:12px;padding:30px 20px 50px;border-top:1px solid var(--line);margin-top:40px}
+  .progress{position:fixed;top:0;left:0;height:2.5px;background:var(--accent);width:0;z-index:99;transition:width .1s}
+  .backtop{position:fixed;right:22px;bottom:26px;width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--bg);border:none;cursor:pointer;font-size:16px;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+  .btn-fold-all{background:none;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;color:var(--ink-2);cursor:pointer}
+  .btn-fold-all:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ── 多端布局自适应：平板 / 手机 / 极窄屏三档 ── */
+  @media (max-width:900px){
+    .topbar-inner{padding:10px 16px}
+    .hero{padding:34px 16px 8px}
+    .kpi-grid{padding:0 16px}
+    .wrap{padding:24px 16px 64px}
+  }
+  @media (max-width:640px){
+    body{font-size:14.5px}
+    .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+    .kpi{padding:13px 14px}
+    .kpi .value{font-size:21px}
+    .info-item .k{width:80px}
+    .sec-head h2{font-size:18px}
+    .conclusion-card{padding:18px 18px}
+  }
+  @media (max-width:480px){
+    .nav{width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{flex:none}
+    .info-item{flex-direction:column;gap:1px}
+    .info-item .k{width:auto}
+    .chart-card{overflow-x:auto}
+    th,td{padding:8px 10px}
+  }
+
+  /* ── 打印 / 导出 PDF：强制浅色、展开折叠、隐藏浮层 ── */
+  @media print{
+    :root{--bg:#fff;--card:#fff;--ink:#111;--ink-2:#444;--ink-3:#666;--line:#ddd;--hover:#f7f7f7;--th-bg:#f2f2f2;--topbar-bg:#fff}
+    .topbar,.progress,.backtop,.btn-fold-all{display:none!important}
+    .fold-body{display:block!important}
+    section.block{break-inside:avoid}
+  }
+
+  /* ── 尊重系统「减弱动态效果」：动画归零（性能优先） ── */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- 1. 顶栏导航 -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-dot"></div>
+    <div>
+      <div class="title">{{短标题}}</div>
+      <div class="sub">{{调研口径说明}} · {{生成日期}}</div>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#sec-overview">概览</a>
+      <a href="#sec-detail">详析</a>
+      <a href="#sec-timeline">时间线</a>
+      <a href="#sec-conflict">矛盾</a>
+      <a href="#sec-conclusion">结论</a>
+      <a href="#sec-source">来源</a>
+    </nav>
+  </div>
+</div>
+
+<!-- 2. Hero -->
+<header class="hero">
+  <div class="tag">● {{调研类型标签}}</div>
+  <h1>{{调研对象全名}}</h1>
+  <div class="alias">{{别名 / 品牌 / 关键身份一行}}</div>
+  <div class="meta-row">
+    <span>◦ {{关键标签1}}</span>
+    <span>◦ {{关键标签2}}</span>
+    <span>◦ {{关键标签3}}</span>
+    <span>◦ {{关键标签4}}</span>
+  </div>
+</header>
+
+<!-- 3. KPI 指标卡 -->
+<div class="kpi-grid">
+  <div class="kpi hl">
+    <div class="label">{{指标1名}}</div>
+    <div class="value">{{数值}}<small> {{单位}}</small></div>
+    <div class="note">{{口径说明}}</div>
+  </div>
+  <div class="kpi">
+    <div class="label">{{指标2名}}</div>
+    <div class="value">{{数值}}<small> {{单位}}</small></div>
+    <div class="note">{{口径说明}}</div>
+  </div>
+  <!-- 按需复制 .kpi 至 4-6 个 -->
+</div>
+
+<div class="wrap">
+
+  <!-- 4. 摘要 -->
+  <section class="block" id="sec-overview">
+    <div class="sec-head"><span class="sec-num">01</span><h2>摘要</h2><span class="hint">300-500 字速览</span></div>
+    <div class="card">
+      <p style="font-size:14px">{{摘要正文：对象是谁、核心发现 3 条、主要风险 1 条，关键结论旁放置信度徽章}} <span class="badge b-high">置信度：高</span></p>
+      <div class="callout c-note">
+        <span class="icon">📎</span>
+        <div>{{数据口径说明：检索轮次、信源数量、日期、哪些数据来自企业自述}}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 详细章节（可折叠面板） -->
+  <section class="block" id="sec-detail">
+    <div class="sec-head"><span class="sec-num">02</span><h2>{{详细章节总标题}}</h2><span class="hint">{{来源提示}}</span></div>
+
+    <div class="fold open">
+      <button class="fold-head">📋 {{子主题1}}
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="fold-body">
+        <div class="info-grid">
+          <div>
+            <div class="info-item"><span class="k">{{字段}}</span><span class="v">{{值}}</span></div>
+            <div class="info-item"><span class="k">{{字段}}</span><span class="v">{{值}}</span></div>
+          </div>
+          <div>
+            <div class="info-item"><span class="k">{{字段}}</span><span class="v">{{值}}</span></div>
+            <div class="info-item"><span class="k">{{字段}}</span><span class="v">{{值}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fold">
+      <button class="fold-head">🧾 {{子主题2}}
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="fold-body">
+        <p style="font-size:13.5px;color:var(--ink-2)">{{正文}}</p>
+        <div class="callout c-warn">
+          <span class="icon">⚡</span>
+          <div>{{需要注意的解读}} <span class="badge b-mid">置信度：中</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 双栏对比卡片（业务/阵营/方案对比时启用） -->
+    <div class="biz-grid" style="margin-top:14px">
+      <div class="biz-card" style="border-top:3px solid var(--green)">
+        <div class="biz-tag" style="background:var(--green-soft);color:var(--green)">{{栏目标签A}}</div>
+        <h3>{{栏目A标题}}</h3>
+        <p>{{栏目A描述}}</p>
+        <ul><li>{{要点}}</li><li>{{要点}}</li></ul>
+      </div>
+      <div class="biz-card" style="border-top:3px solid var(--accent)">
+        <div class="biz-tag" style="background:var(--accent-soft);color:var(--accent)">{{栏目标签B}}</div>
+        <h3>{{栏目B标题}}</h3>
+        <p>{{栏目B描述}}</p>
+        <ul><li>{{要点}}</li><li>{{要点}}</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 图表区 -->
+  <section class="block" id="sec-chart">
+    <div class="sec-head"><span class="sec-num">03</span><h2>数据图表</h2><span class="hint">真实数据 · 图下注明来源</span></div>
+    <div class="charts-2">
+      <div class="chart-card">
+        <div class="chart-title">{{图表1标题}}</div>
+        <div class="chart-sub">{{数据来源与置信度}}</div>
+        <div class="bar-row"><span class="name">{{项}}</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="num">{{值}}</span></div>
+        <div class="bar-row"><span class="name">{{项}}</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:linear-gradient(90deg,#34d399,#1a9e6e)"></div></div><span class="num">{{值}}</span></div>
+        <div class="bar-row"><span class="name">{{项}}</span><div class="bar-track"><div class="bar-fill" style="width:30%;background:linear-gradient(90deg,#a78bfa,#7c5cd6)"></div></div><span class="num">{{值}}</span></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">{{图表2标题（表格形式）}}</div>
+        <div class="chart-sub">{{口径说明}}</div>
+        <table>
+          <thead><tr><th>{{列}}</th><th>{{列}}</th><th>{{列}}</th></tr></thead>
+          <tbody><tr><td>{{值}}</td><td>{{值}}</td><td><span class="badge b-high">高</span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 时间线 -->
+  <section class="block" id="sec-timeline">
+    <div class="sec-head"><span class="sec-num">04</span><h2>时间线</h2><span class="hint">{{起止年份}}</span></div>
+    <div class="card">
+      <div class="timeline">
+        <div class="tl-item good"><div class="tl-date">{{日期}}</div><div class="tl-text"><b>{{事件}}</b>{{补充}}</div></div>
+        <div class="tl-item"><div class="tl-date">{{日期}}</div><div class="tl-text">{{事件}}</div></div>
+        <div class="tl-item warn"><div class="tl-date">{{日期}}</div><div class="tl-text">{{中性偏警示事件}}</div></div>
+        <div class="tl-item risk"><div class="tl-date">{{日期}}</div><div class="tl-text">{{风险事件}}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 矛盾信息与置信度清单（不可省略） -->
+  <section class="block" id="sec-conflict">
+    <div class="sec-head"><span class="sec-num">05</span><h2>矛盾信息与置信度清单</h2><span class="hint">本报告标志性章节</span></div>
+    <div class="card" style="padding:0;overflow-x:auto">
+      <table>
+        <thead><tr><th>数据点</th><th>说法 A</th><th>说法 B</th><th>本报告采用</th><th>置信度</th></tr></thead>
+        <tbody>
+          <tr><td>{{数据点}}</td><td>{{说法A}}</td><td>{{说法B}}</td><td>{{采用值}}</td><td><span class="badge b-high">高</span></td></tr>
+          <tr><td>{{数据点}}</td><td>{{说法A}}</td><td>{{说法B}}</td><td>{{采用值}}</td><td><span class="badge b-mid">中</span></td></tr>
+          <tr><td>{{数据点}}</td><td>{{说法A}}</td><td>{{说法B}}</td><td>{{采用值}}</td><td><span class="badge b-low">低</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9. 结论与建议 -->
+  <section class="block" id="sec-conclusion">
+    <div class="sec-head"><span class="sec-num">06</span><h2>结论与建议</h2><span class="hint">事实 / 推论 / 判断分层</span></div>
+    <div class="conclusion-card">
+      <h3>一句话画像</h3>
+      <p>{{一句话总结核心画像}}</p>
+      <div class="c-item"><div class="dot"></div><div><span class="badge b-high">事实</span>{{多源验证过的结论}}</div></div>
+      <div class="c-item"><div class="dot"></div><div><span class="badge b-mid">推论</span>{{从事实推导的判断}}</div></div>
+      <div class="c-item"><div class="dot"></div><div><span class="badge b-low">判断</span>{{值得跟踪的变量 / 易误判点 / 反证条件}}</div></div>
+    </div>
+    <button class="btn-fold-all" id="foldAll" style="margin-top:14px">收起全部折叠面板</button>
+  </section>
+
+  <!-- 10. 数据来源清单（不可省略） -->
+  <section class="block" id="sec-source">
+    <div class="sec-head"><span class="sec-num">07</span><h2>数据来源清单</h2><span class="hint">S/A/B 分级 · {{检索日期}} 检索</span></div>
+    <div class="src-list">
+      <div class="src-item"><span class="lv lv-s">S</span><div><div class="t">{{来源标题}}</div><div class="u"><a href="{{URL}}" target="_blank">{{显示URL}}</a></div></div></div>
+      <div class="src-item"><span class="lv lv-a">A</span><div><div class="t">{{来源标题}}</div><div class="u"><a href="{{URL}}" target="_blank">{{显示URL}}</a></div></div></div>
+      <div class="src-item"><span class="lv lv-b">B</span><div><div class="t">{{来源标题}}</div><div class="u"><a href="{{URL}}" target="_blank">{{显示URL}}</a></div></div></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  {{页脚：报告标题 · 生成日期 · 免责声明}}
+</footer>
+
+<button class="backtop" id="backtop" title="回到顶部">↑</button>
+
+<script>
+(function(){
+  document.querySelectorAll('.fold-head').forEach(function(head){
+    head.addEventListener('click', function(){ head.parentElement.classList.toggle('open'); });
+  });
+  var btn = document.getElementById('foldAll');
+  if(btn){
+    btn.addEventListener('click', function(){
+      var folds = document.querySelectorAll('.fold');
+      var anyOpen = Array.prototype.some.call(folds, function(f){return f.classList.contains('open');});
+      folds.forEach(function(f){ f.classList.toggle('open', !anyOpen); });
+      btn.textContent = anyOpen ? '展开全部折叠面板' : '收起全部折叠面板';
+    });
+  }
+  var progress = document.getElementById('progress');
+  var backtop = document.getElementById('backtop');
+  var navLinks = document.querySelectorAll('#nav a');
+  var sections = [];
+  navLinks.forEach(function(a){
+    var el = document.querySelector(a.getAttribute('href'));
+    if(el) sections.push({link:a, el:el});
+  });
+  function onScroll(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (scrolled*100) + '%';
+    backtop.style.display = h.scrollTop > 500 ? 'flex' : 'none';
+    var current = null;
+    sections.forEach(function(s){ if(s.el.getBoundingClientRect().top <= 120) current = s; });
+    navLinks.forEach(function(a){a.classList.remove('active');});
+    if(current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  backtop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.querySelectorAll('.bar-fill').forEach(function(bar){
+            var w = bar.style.width;
+            bar.style.width = '0';
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){ bar.style.width = w; bar.style.transition='width .8s cubic-bezier(.22,1,.36,1)'; });
+            });
+          });
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:.25});
+    document.querySelectorAll('.chart-card').forEach(function(c){ io.observe(c); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+._*
+
+# 临时与备份
+*.bak
+*.bak-*
+*~
+*.tmp
+
+# 打包产物（SkillHub 上传请直接传文件夹，或自行打包后删除）
+*.zip
+
+# Python
+__pycache__/
+*.pyc
