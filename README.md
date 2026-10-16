@@ -1,6 +1,6 @@
 # 明察 Pro Max（Ming Cha Pro Max）
 
-> **睿者，见未形；察者，知秋毫。**
+> **明察秋毫，Max 级主动。**
 > 主动式深度研究中枢：主动预判 + 单 Agent 轻量研究 + 多 Agent 并行深挖，三合一一条流水线。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
